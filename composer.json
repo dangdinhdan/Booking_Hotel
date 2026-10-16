@@ -1,8 +1,8 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "dangdinhdan/quan-ly-lop-hoc",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Hệ thống Quản lý Lớp học và Sinh viên - HUCE",
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {

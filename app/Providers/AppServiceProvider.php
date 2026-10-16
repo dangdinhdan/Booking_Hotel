@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Support\Facades\Auth;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -60,9 +62,16 @@ class AppServiceProvider extends ServiceProvider
                     ]),
                     new Menu([
                         'vi_tri' => 'header',
+                        'ten' => 'Người dùng',
+                        'url' => route('user.index'),
+                        'thu_tu' => 4,
+                        'trang_thai' => true,
+                    ]),
+                    new Menu([
+                        'vi_tri' => 'header',
                         'ten' => 'Quản lý Menu',
                         'url' => route('menu.index'),
-                        'thu_tu' => 4,
+                        'thu_tu' => 5,
                         'trang_thai' => true,
                     ]),
                     new Menu([
@@ -100,12 +109,40 @@ class AppServiceProvider extends ServiceProvider
                     new Menu([
                         'vi_tri' => 'sidebar',
                         'nhom' => 'Hệ thống',
-                        'ten' => 'Quản lý Menu',
-                        'url' => route('menu.index'),
+                        'ten' => 'Quản lý người dùng',
+                        'url' => route('user.index'),
                         'thu_tu' => 5,
                         'trang_thai' => true,
                     ]),
+                    new Menu([
+                        'vi_tri' => 'sidebar',
+                        'nhom' => 'Hệ thống',
+                        'ten' => 'Quản lý Menu',
+                        'url' => route('menu.index'),
+                        'thu_tu' => 6,
+                        'trang_thai' => true,
+                    ]),
+                    new Menu([
+                        'vi_tri' => 'sidebar',
+                        'nhom' => 'Cá nhân',
+                        'ten' => 'Tài khoản của tôi',
+                        'url' => route('profile.edit'),
+                        'thu_tu' => 7,
+                        'trang_thai' => true,
+                    ]),
                 ]);
+            }
+
+            // Phân quyền hiển thị menu: Giảng viên chỉ thấy Lớp học, Sinh viên, Tài khoản cá nhân
+            if (Auth::check() && !Auth::user()->isAdmin()) {
+                $dbMenus = $dbMenus->filter(function ($menu) {
+                    $url = strtolower($menu->url ?? '');
+                    // Ẩn các menu quản lý user và menu đối với Giảng viên
+                    if (str_contains($url, '/user') || str_contains($url, '/menu') || $menu->nhom === 'Hệ thống') {
+                        return false;
+                    }
+                    return true;
+                });
             }
 
             $menuHienThi = $dbMenus->groupBy('vi_tri');

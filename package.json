@@ -1,5 +1,6 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
+    "name": "quan-ly-lop-hoc",
     "private": true,
     "type": "module",
     "scripts": {
